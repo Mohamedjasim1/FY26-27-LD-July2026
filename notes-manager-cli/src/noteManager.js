@@ -60,10 +60,25 @@ function updateNote(id, newTitle, newContent) {
   return notes[noteIndex];
 }
 
+function deleteNote(id) {
+  const notes = loadNotes();
+  const numericId = parseInt(id, 10);
+  const initialLength = notes.length;
+  const filteredNotes = notes.filter((note) => note.id !== numericId);
+
+  if (filteredNotes.length === initialLength) {
+    return false;
+  }
+
+  saveNotes(filteredNotes);
+  return true;
+}
+
 module.exports = {
   getNotes,
   getNoteById,
   searchNotes,
   addNote,
-  updateNote
+  updateNote,
+  deleteNote
 };

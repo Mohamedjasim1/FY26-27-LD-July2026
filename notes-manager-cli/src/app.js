@@ -1,5 +1,5 @@
 const readline = require('readline');
-const { addNote, getNotes, getNoteById, searchNotes, updateNote } = require('./noteManager');
+const { addNote, getNotes, getNoteById, searchNotes, updateNote, deleteNote } = require('./noteManager');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -14,11 +14,12 @@ function showMainMenu() {
   console.log('2. View a specific note');
   console.log('3. Search notes');
   console.log('4. Edit a note');
-  console.log('5. Add a note');
-  console.log('6. Exit');
+  console.log('5. Delete a note');
+  console.log('6. Add a note');
+  console.log('7. Exit');
   console.log('=================================');
 
-  rl.question('Select an option (1-6): ', (choice) => {
+  rl.question('Select an option (1-7): ', (choice) => {
     switch (choice.trim()) {
       case '1':
         viewAllNotes();
@@ -33,9 +34,12 @@ function showMainMenu() {
         promptEditNote();
         break;
       case '5':
-        promptAddNote();
+        promptDeleteNote();
         break;
       case '6':
+        promptAddNote();
+        break;
+      case '7':
         console.log('\nGoodbye!');
         rl.close();
         break;
@@ -52,7 +56,7 @@ function viewAllNotes() {
 
   console.log('\n--- All Notes ---');
   if (notes.length === 0) {
-    console.log('No notes found. Select option 5 to create one!');
+    console.log('No notes found. Select option 6 to create one!');
   } else {
     notes.forEach((note) => {
       console.log(`\n[ID: ${note.id}] ${note.title}`);
@@ -132,6 +136,29 @@ function promptEditNote() {
         console.log(`\nSuccess: Note #${updated.id} updated successfully!`);
         showMainMenu();
       });
+    });
+  });
+}
+
+function promptDeleteNote() {
+  console.log('\n--- Delete a Note ---');
+  rl.question('Enter Note ID to delete: ', (idInput) => {
+    const noteId = idInput.trim();
+    const note = getNoteById(noteId);
+
+    if (!note) {
+      console.log(`\nNote with ID ${noteId} not found.`);
+      return showMainMenu();
+    }
+
+    rl.question(`Are you sure you want to delete Note #${note.id} ("${note.title}")? (y/n): `, (confirm) => {
+      if (confirm.trim().toLowerCase() === 'y') {
+        deleteNote(noteId);
+        console.log(`\nSuccess: Note #${noteId} deleted successfully!`);
+      } else {
+        console.log('\nDeletion cancelled.');
+      }
+      showMainMenu();
     });
   });
 }
