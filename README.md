@@ -13,7 +13,8 @@ notes-manager-cli/
 ├── src/
 │   ├── app.js           # CLI entry point and interactive menu navigation
 │   ├── noteManager.js   # Functions for managing note operations (Add, View, Edit, Delete, Search)
-│   └── storage.js       # File reading and writing operations using fs and path
+│   ├── storage.js       # File reading and writing operations using fs and path
+│   └── validator.js     # Input validation functions for IDs, titles, and user inputs
 │
 ├── package.json
 └── README.md
@@ -97,3 +98,9 @@ Creates a new note with a title and content. Automatically assigns an incrementa
 **Example Usage:**
 - Enter Note Title: `Meeting Notes`
 - Enter Note Content: `Discuss project roadmap with team`
+
+### 7. Input Validation & Error Checks
+The application validates inputs to prevent errors:
+- **Title Validation**: Requires titles to be between 3 and 50 characters long.
+- **ID Validation**: Ensures entered IDs are valid positive integers.
+- **Menu Choice Validation**: Guarantees selections are valid numbers between 1 and 7.
