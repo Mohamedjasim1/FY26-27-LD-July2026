@@ -24,11 +24,15 @@ function searchNotes(query) {
 
 function addNote(title, content) {
   const notes = loadNotes();
+  const formattedContent = content
+    .split('|')
+    .map((line) => line.trim())
+    .join('\n');
 
   const newNote = {
     id: notes.length > 0 ? notes[notes.length - 1].id + 1 : 1,
     title: title.trim(),
-    content: content.trim(),
+    content: formattedContent,
     createdAt: new Date().toISOString()
   };
 
@@ -51,7 +55,10 @@ function updateNote(id, newTitle, newContent) {
     notes[noteIndex].title = newTitle.trim();
   }
   if (newContent && newContent.trim()) {
-    notes[noteIndex].content = newContent.trim();
+    notes[noteIndex].content = newContent
+      .split('|')
+      .map((line) => line.trim())
+      .join('\n');
   }
 
   notes[noteIndex].updatedAt = new Date().toISOString();
