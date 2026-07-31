@@ -1,5 +1,6 @@
 const readline = require('readline');
 const { addNote, getNotes, getNoteById, searchNotes, updateNote, deleteNote } = require('./noteManager');
+const { isValidId, isValidTitle, isValidContent, isValidChoice } = require('./validator');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -20,6 +21,11 @@ function showMainMenu() {
   console.log('=================================');
 
   rl.question('Select an option (1-7): ', (choice) => {
+    if (!isValidChoice(choice, 1, 7)) {
+      console.log('\nInvalid option. Please enter a number between 1 and 7.');
+      return showMainMenu();
+    }
+
     switch (choice.trim()) {
       case '1':
         viewAllNotes();
@@ -42,10 +48,6 @@ function showMainMenu() {
       case '7':
         console.log('\nGoodbye!');
         rl.close();
-        break;
-      default:
-        console.log('\nInvalid option. Please try again.');
-        showMainMenu();
         break;
     }
   });
@@ -75,6 +77,11 @@ function viewAllNotes() {
 function promptViewNote() {
   console.log('\n--- View a Specific Note ---');
   rl.question('Enter Note ID: ', (idInput) => {
+    if (!isValidId(idInput)) {
+      console.log('\nValidation Error: ID must be a valid positive integer.');
+      return showMainMenu();
+    }
+
     const note = getNoteById(idInput.trim());
 
     if (!note) {
@@ -98,6 +105,11 @@ function promptViewNote() {
 function promptSearchNotes() {
   console.log('\n--- Search Notes ---');
   rl.question('Enter search keyword: ', (query) => {
+    if (!query || !query.trim()) {
+      console.log('\nValidation Error: Search keyword cannot be empty.');
+      return showMainMenu();
+    }
+
     const results = searchNotes(query);
 
     console.log(`\n--- Search Results for "${query.trim()}" ---`);
@@ -122,6 +134,11 @@ function promptSearchNotes() {
 function promptEditNote() {
   console.log('\n--- Edit a Note ---');
   rl.question('Enter Note ID to edit: ', (idInput) => {
+    if (!isValidId(idInput)) {
+      console.log('\nValidation Error: ID must be a valid positive integer.');
+      return showMainMenu();
+    }
+
     const note = getNoteById(idInput.trim());
 
     if (!note) {
@@ -131,6 +148,11 @@ function promptEditNote() {
 
     console.log(`Editing Note #${note.id}: "${note.title}"`);
     rl.question(`Enter new Title (leave blank to keep "${note.title}"): `, (newTitle) => {
+      if (newTitle.trim() && !isValidTitle(newTitle)) {
+        console.log('\nValidation Error: New title must be between 3 and 50 characters.');
+        return showMainMenu();
+      }
+
       rl.question(`Enter new Content (leave blank to keep existing content): `, (newContent) => {
         const updated = updateNote(note.id, newTitle, newContent);
         console.log(`\nSuccess: Note #${updated.id} updated successfully!`);
@@ -143,6 +165,11 @@ function promptEditNote() {
 function promptDeleteNote() {
   console.log('\n--- Delete a Note ---');
   rl.question('Enter Note ID to delete: ', (idInput) => {
+    if (!isValidId(idInput)) {
+      console.log('\nValidation Error: ID must be a valid positive integer.');
+      return showMainMenu();
+    }
+
     const noteId = idInput.trim();
     const note = getNoteById(noteId);
 
@@ -152,7 +179,8 @@ function promptDeleteNote() {
     }
 
     rl.question(`Are you sure you want to delete Note #${note.id} ("${note.title}")? (y/n): `, (confirm) => {
-      if (confirm.trim().toLowerCase() === 'y') {
+      const choice = confirm.trim().toLowerCase();
+      if (choice === 'y' || choice === 'yes') {
         deleteNote(noteId);
         console.log(`\nSuccess: Note #${noteId} deleted successfully!`);
       } else {
@@ -166,12 +194,17 @@ function promptDeleteNote() {
 function promptAddNote() {
   console.log('\n--- Add a New Note ---');
   rl.question('Enter Note Title: ', (title) => {
-    if (!title.trim()) {
-      console.log('Note title cannot be empty.');
+    if (!isValidTitle(title)) {
+      console.log('\nValidation Error: Title is required and must be between 3 and 50 characters.');
       return showMainMenu();
     }
 
     rl.question('Enter Note Content: ', (content) => {
+      if (!isValidContent(content)) {
+        console.log('\nValidation Error: Content cannot be empty.');
+        return showMainMenu();
+      }
+
       const createdNote = addNote(title, content);
       console.log(`\nSuccess: Note #${createdNote.id} ("${createdNote.title}") created successfully!`);
       showMainMenu();
