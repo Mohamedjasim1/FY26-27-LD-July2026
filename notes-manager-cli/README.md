@@ -28,11 +28,13 @@ Handles reading from and writing to the local `data/notes.json` file using Node.
 
 ### `src/noteManager.js`
 Encapsulates business logic for notes management.
+* **`getNotes()`**: Retrieves and returns all saved note objects from storage.
 * **`addNote(title, content)`**: Loads existing notes, creates a new note object with an auto-incrementing `id`, trimmed `title`, trimmed `content`, and a `createdAt` ISO timestamp, appends it to the list, saves to storage, and returns the newly created note object.
 
 ### `src/app.js`
 Main CLI entry point managing terminal interaction via `readline`.
 * **`showMainMenu()`**: Displays interactive option menu to the user.
+* **`viewAllNotes()`**: Fetches all notes using `getNotes()` and formats them clearly in the terminal. If no notes exist, informs the user.
 * **`promptAddNote()`**: Prompts user sequentially for Note Title and Content, validates input, calls `addNote()`, and displays confirmation.
 
 ## How to Run

@@ -1,5 +1,5 @@
 const readline = require('readline');
-const { addNote } = require('./noteManager');
+const { addNote, getNotes } = require('./noteManager');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -10,7 +10,7 @@ function showMainMenu() {
   console.log('\n=================================');
   console.log('       NOTES MANAGER CLI         ');
   console.log('=================================');
-  console.log('1. View all notes (Coming soon)');
+  console.log('1. View all notes');
   console.log('2. Add a note');
   console.log('3. Exit');
   console.log('=================================');
@@ -18,8 +18,7 @@ function showMainMenu() {
   rl.question('Select an option (1-3): ', (choice) => {
     switch (choice.trim()) {
       case '1':
-        console.log('\nThis feature is under development.');
-        showMainMenu();
+        viewAllNotes();
         break;
       case '2':
         promptAddNote();
@@ -34,6 +33,27 @@ function showMainMenu() {
         break;
     }
   });
+}
+
+/**
+ * Displays all saved notes in a clean CLI layout.
+ */
+function viewAllNotes() {
+  const notes = getNotes();
+
+  console.log('\n--- All Notes ---');
+  if (notes.length === 0) {
+    console.log('No notes found. Select option 2 to create one!');
+  } else {
+    notes.forEach((note) => {
+      console.log(`\n[ID: ${note.id}] ${note.title}`);
+      console.log(`Content: ${note.content}`);
+      console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
+      console.log('---------------------------------');
+    });
+  }
+
+  showMainMenu();
 }
 
 /**

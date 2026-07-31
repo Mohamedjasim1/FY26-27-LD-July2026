@@ -1,6 +1,14 @@
 const { loadNotes, saveNotes } = require('./storage');
 
 /**
+ * Retrieves all stored notes.
+ * @returns {Array} List of note objects
+ */
+function getNotes() {
+  return loadNotes();
+}
+
+/**
  * Adds a new note with title and content.
  * Generates an incrementing ID and timestamp.
  * @param {string} title - Note title
@@ -24,5 +32,6 @@ function addNote(title, content) {
 }
 
 module.exports = {
+  getNotes,
   addNote
 };
