@@ -1,5 +1,5 @@
 const readline = require('readline');
-const { addNote, getNotes, getNoteById, searchNotes } = require('./noteManager');
+const { addNote, getNotes, getNoteById, searchNotes, updateNote } = require('./noteManager');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -13,11 +13,12 @@ function showMainMenu() {
   console.log('1. View all notes');
   console.log('2. View a specific note');
   console.log('3. Search notes');
-  console.log('4. Add a note');
-  console.log('5. Exit');
+  console.log('4. Edit a note');
+  console.log('5. Add a note');
+  console.log('6. Exit');
   console.log('=================================');
 
-  rl.question('Select an option (1-5): ', (choice) => {
+  rl.question('Select an option (1-6): ', (choice) => {
     switch (choice.trim()) {
       case '1':
         viewAllNotes();
@@ -29,9 +30,12 @@ function showMainMenu() {
         promptSearchNotes();
         break;
       case '4':
-        promptAddNote();
+        promptEditNote();
         break;
       case '5':
+        promptAddNote();
+        break;
+      case '6':
         console.log('\nGoodbye!');
         rl.close();
         break;
@@ -48,12 +52,15 @@ function viewAllNotes() {
 
   console.log('\n--- All Notes ---');
   if (notes.length === 0) {
-    console.log('No notes found. Select option 4 to create one!');
+    console.log('No notes found. Select option 5 to create one!');
   } else {
     notes.forEach((note) => {
       console.log(`\n[ID: ${note.id}] ${note.title}`);
       console.log(`Content: ${note.content}`);
       console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
+      if (note.updatedAt) {
+        console.log(`Updated: ${new Date(note.updatedAt).toLocaleString()}`);
+      }
       console.log('---------------------------------');
     });
   }
@@ -74,6 +81,9 @@ function promptViewNote() {
       console.log(`Title: ${note.title}`);
       console.log(`Content: ${note.content}`);
       console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
+      if (note.updatedAt) {
+        console.log(`Updated: ${new Date(note.updatedAt).toLocaleString()}`);
+      }
       console.log(`=================================`);
     }
 
@@ -94,11 +104,35 @@ function promptSearchNotes() {
         console.log(`\n[ID: ${note.id}] ${note.title}`);
         console.log(`Content: ${note.content}`);
         console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
+        if (note.updatedAt) {
+          console.log(`Updated: ${new Date(note.updatedAt).toLocaleString()}`);
+        }
         console.log('---------------------------------');
       });
     }
 
     showMainMenu();
+  });
+}
+
+function promptEditNote() {
+  console.log('\n--- Edit a Note ---');
+  rl.question('Enter Note ID to edit: ', (idInput) => {
+    const note = getNoteById(idInput.trim());
+
+    if (!note) {
+      console.log(`\nNote with ID ${idInput.trim()} not found.`);
+      return showMainMenu();
+    }
+
+    console.log(`Editing Note #${note.id}: "${note.title}"`);
+    rl.question(`Enter new Title (leave blank to keep "${note.title}"): `, (newTitle) => {
+      rl.question(`Enter new Content (leave blank to keep existing content): `, (newContent) => {
+        const updated = updateNote(note.id, newTitle, newContent);
+        console.log(`\nSuccess: Note #${updated.id} updated successfully!`);
+        showMainMenu();
+      });
+    });
   });
 }
 

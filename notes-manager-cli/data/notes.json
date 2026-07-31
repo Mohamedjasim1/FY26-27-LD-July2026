@@ -2,7 +2,8 @@
   {
     "id": 1,
     "title": "Hello",
-    "content": "Hii bro",
-    "createdAt": "2026-07-31T18:18:58.791Z"
+    "content": "Hello bro",
+    "createdAt": "2026-07-31T18:18:58.791Z",
+    "updatedAt": "2026-07-31T18:38:40.352Z"
   }
 ]

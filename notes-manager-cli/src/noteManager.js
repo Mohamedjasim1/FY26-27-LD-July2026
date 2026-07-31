@@ -38,9 +38,32 @@ function addNote(title, content) {
   return newNote;
 }
 
+function updateNote(id, newTitle, newContent) {
+  const notes = loadNotes();
+  const numericId = parseInt(id, 10);
+  const noteIndex = notes.findIndex((note) => note.id === numericId);
+
+  if (noteIndex === -1) {
+    return null;
+  }
+
+  if (newTitle && newTitle.trim()) {
+    notes[noteIndex].title = newTitle.trim();
+  }
+  if (newContent && newContent.trim()) {
+    notes[noteIndex].content = newContent.trim();
+  }
+
+  notes[noteIndex].updatedAt = new Date().toISOString();
+  saveNotes(notes);
+
+  return notes[noteIndex];
+}
+
 module.exports = {
   getNotes,
   getNoteById,
   searchNotes,
-  addNote
+  addNote,
+  updateNote
 };
