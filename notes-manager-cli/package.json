@@ -1,0 +1,17 @@
+{
+  "name": "notes-manager-cli",
+  "version": "1.0.0",
+  "description": "A simple Command Line Interface (CLI) application to manage local notes.",
+  "main": "src/app.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "keywords": [
+    "cli",
+    "notes",
+    "node"
+  ],
+  "author": "",
+  "license": "ISC"
+}
