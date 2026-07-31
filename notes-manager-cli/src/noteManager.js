@@ -10,6 +10,18 @@ function getNoteById(id) {
   return notes.find((note) => note.id === numericId) || null;
 }
 
+function searchNotes(query) {
+  const notes = loadNotes();
+  const lowerQuery = query.toLowerCase().trim();
+  if (!lowerQuery) {
+    return [];
+  }
+  return notes.filter((note) =>
+    note.title.toLowerCase().includes(lowerQuery) ||
+    note.content.toLowerCase().includes(lowerQuery)
+  );
+}
+
 function addNote(title, content) {
   const notes = loadNotes();
 
@@ -29,5 +41,6 @@ function addNote(title, content) {
 module.exports = {
   getNotes,
   getNoteById,
+  searchNotes,
   addNote
 };

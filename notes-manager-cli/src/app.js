@@ -1,5 +1,5 @@
 const readline = require('readline');
-const { addNote, getNotes, getNoteById } = require('./noteManager');
+const { addNote, getNotes, getNoteById, searchNotes } = require('./noteManager');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -12,11 +12,12 @@ function showMainMenu() {
   console.log('=================================');
   console.log('1. View all notes');
   console.log('2. View a specific note');
-  console.log('3. Add a note');
-  console.log('4. Exit');
+  console.log('3. Search notes');
+  console.log('4. Add a note');
+  console.log('5. Exit');
   console.log('=================================');
 
-  rl.question('Select an option (1-4): ', (choice) => {
+  rl.question('Select an option (1-5): ', (choice) => {
     switch (choice.trim()) {
       case '1':
         viewAllNotes();
@@ -25,9 +26,12 @@ function showMainMenu() {
         promptViewNote();
         break;
       case '3':
-        promptAddNote();
+        promptSearchNotes();
         break;
       case '4':
+        promptAddNote();
+        break;
+      case '5':
         console.log('\nGoodbye!');
         rl.close();
         break;
@@ -44,7 +48,7 @@ function viewAllNotes() {
 
   console.log('\n--- All Notes ---');
   if (notes.length === 0) {
-    console.log('No notes found. Select option 3 to create one!');
+    console.log('No notes found. Select option 4 to create one!');
   } else {
     notes.forEach((note) => {
       console.log(`\n[ID: ${note.id}] ${note.title}`);
@@ -71,6 +75,27 @@ function promptViewNote() {
       console.log(`Content: ${note.content}`);
       console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
       console.log(`=================================`);
+    }
+
+    showMainMenu();
+  });
+}
+
+function promptSearchNotes() {
+  console.log('\n--- Search Notes ---');
+  rl.question('Enter search keyword: ', (query) => {
+    const results = searchNotes(query);
+
+    console.log(`\n--- Search Results for "${query.trim()}" ---`);
+    if (results.length === 0) {
+      console.log('No matching notes found.');
+    } else {
+      results.forEach((note) => {
+        console.log(`\n[ID: ${note.id}] ${note.title}`);
+        console.log(`Content: ${note.content}`);
+        console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
+        console.log('---------------------------------');
+      });
     }
 
     showMainMenu();
