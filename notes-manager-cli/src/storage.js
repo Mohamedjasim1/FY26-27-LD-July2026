@@ -3,10 +3,6 @@ const path = require('path');
 
 const DATA_FILE = path.join(__dirname, '../data/notes.json');
 
-/**
- * Loads notes array from data/notes.json file.
- * Returns empty array if file does not exist or is invalid.
- */
 function loadNotes() {
   try {
     if (!fs.existsSync(DATA_FILE)) {
@@ -23,10 +19,6 @@ function loadNotes() {
   }
 }
 
-/**
- * Saves notes array to data/notes.json file.
- * @param {Array} notes - Array of note objects to persist
- */
 function saveNotes(notes) {
   try {
     const jsonString = JSON.stringify(notes, null, 2);
