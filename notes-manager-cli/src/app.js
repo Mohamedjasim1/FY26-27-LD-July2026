@@ -224,7 +224,7 @@ function promptEditNote() {
         return showMainMenu();
       }
 
-      rl.question(`Enter new Content (use '|' for new lines, or leave blank to keep existing): `, (newContent) => {
+      rl.question(`Enter new Content (use '|' for new lines, '*' for list items, or leave blank to keep existing): `, (newContent) => {
         const updated = updateNote(note.id, newTitle, newContent);
         console.log(`\nSuccess: Note #${updated.id} updated successfully!`);
         showMainMenu();
@@ -270,7 +270,7 @@ function promptAddNote() {
       return showMainMenu();
     }
 
-    rl.question('Enter Note Content (use \'|\' for new lines): ', (content) => {
+    rl.question('Enter Note Content (use \'|\' for new lines, \'*\' for list items): ', (content) => {
       if (!isValidContent(content)) {
         console.log('\nValidation Error: Content cannot be empty.');
         return showMainMenu();

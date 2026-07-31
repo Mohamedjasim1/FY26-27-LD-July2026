@@ -36,12 +36,22 @@ function getSortedNotes(sortBy) {
   return copy;
 }
 
+function formatContent(content) {
+  return content
+    .split('|')
+    .map((line) => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('*')) {
+        return `  • ${trimmed.substring(1).trim()}`;
+      }
+      return trimmed;
+    })
+    .join('\n');
+}
+
 function addNote(title, content) {
   const notes = loadNotes();
-  const formattedContent = content
-    .split('|')
-    .map((line) => line.trim())
-    .join('\n');
+  const formattedContent = formatContent(content);
 
   const newNote = {
     id: notes.length > 0 ? notes[notes.length - 1].id + 1 : 1,
@@ -70,10 +80,7 @@ function updateNote(id, newTitle, newContent) {
     notes[noteIndex].title = newTitle.trim();
   }
   if (newContent && newContent.trim()) {
-    notes[noteIndex].content = newContent
-      .split('|')
-      .map((line) => line.trim())
-      .join('\n');
+    notes[noteIndex].content = formatContent(newContent);
   }
 
   notes[noteIndex].updatedAt = new Date().toISOString();

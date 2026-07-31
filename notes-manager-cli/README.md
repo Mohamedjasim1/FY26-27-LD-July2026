@@ -61,9 +61,9 @@ Lists every note currently stored in your local file. Pinned favorite notes disp
 
 [ID: 1] Shopping List  [★ FAVORITE]
 Content:
-Buy milk
-Buy eggs
-Buy bread
+  • Buy milk
+  • Buy eggs
+  • Buy bread
 Created: 7/31/2026, 11:30:00 PM
 ---------------------------------
 ```
@@ -107,7 +107,7 @@ Modifies an existing note by ID. You can enter a new title or new content. Leavi
 **Example Usage:**
 - Enter Note ID to edit: `1`
 - Enter new Title (leave blank to keep "Shopping List"): `Weekend Groceries`
-- Enter new Content (use '|' for new lines, or leave blank to keep existing): `Line 1 | Line 2`
+- Enter new Content (use '|' for new lines, '*' for list items): `* Item 1 | * Item 2`
 
 ### 7. Delete a Note
 Removes a note permanently from storage after asking for confirmation (`y/n`).
@@ -116,12 +116,22 @@ Removes a note permanently from storage after asking for confirmation (`y/n`).
 - Enter Note ID to delete: `1`
 - Confirmation: `Are you sure you want to delete Note #1? (y/n): y`
 
-### 8. Add a Note (Supports Multi-line Content)
-Creates a new note with a title and content. Use the pipe character `|` to separate lines for multi-line notes.
+### 8. Add a Note (Multi-line & Bullet List Support)
+Creates a new note with a title and content.
+- Use pipe `|` to separate lines for multi-line notes.
+- Start a line with `*` (asterisk) to format it as a bulleted list item (`•`).
 
 **Example Usage:**
 - Enter Note Title: `Grocery List`
-- Enter Note Content (use '|' for new lines): `Buy milk | Buy eggs | Buy bread`
+- Enter Note Content: `* Buy milk | * Buy eggs | * Buy bread`
+
+**Formatted Output:**
+```text
+Content:
+  • Buy milk
+  • Buy eggs
+  • Buy bread
+```
 
 ### 9. Input Validation & Error Checks
 The application validates inputs to prevent errors:
