@@ -58,7 +58,10 @@ Lists every note currently stored in your local file. If no notes exist, it info
 --- All Notes ---
 
 [ID: 1] Shopping List
-Content: Buy milk, eggs, and bread
+Content:
+Buy milk
+Buy eggs
+Buy bread
 Created: 7/31/2026, 11:30:00 PM
 ---------------------------------
 ```
@@ -83,7 +86,7 @@ Modifies an existing note by ID. You can enter a new title or new content. Leavi
 **Example Usage:**
 - Enter Note ID to edit: `1`
 - Enter new Title (leave blank to keep "Shopping List"): `Weekend Groceries`
-- Enter new Content (leave blank to keep existing content): `[Enter]`
+- Enter new Content (use '|' for new lines, or leave blank to keep existing): `Line 1 | Line 2`
 
 ### 5. Delete a Note
 Removes a note permanently from storage after asking for confirmation (`y/n`).
@@ -92,12 +95,12 @@ Removes a note permanently from storage after asking for confirmation (`y/n`).
 - Enter Note ID to delete: `1`
 - Confirmation: `Are you sure you want to delete Note #1? (y/n): y`
 
-### 6. Add a Note
-Creates a new note with a title and content. Automatically assigns an incremental ID and creation timestamp.
+### 6. Add a Note (Supports Multi-line Content)
+Creates a new note with a title and content. Use the pipe character `|` to separate lines for multi-line notes.
 
 **Example Usage:**
-- Enter Note Title: `Meeting Notes`
-- Enter Note Content: `Discuss project roadmap with team`
+- Enter Note Title: `Grocery List`
+- Enter Note Content (use '|' for new lines): `Buy milk | Buy eggs | Buy bread`
 
 ### 7. Input Validation & Error Checks
 The application validates inputs to prevent errors:

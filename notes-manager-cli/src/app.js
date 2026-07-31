@@ -62,7 +62,7 @@ function viewAllNotes() {
   } else {
     notes.forEach((note) => {
       console.log(`\n[ID: ${note.id}] ${note.title}`);
-      console.log(`Content: ${note.content}`);
+      console.log(`Content:\n${note.content}`);
       console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
       if (note.updatedAt) {
         console.log(`Updated: ${new Date(note.updatedAt).toLocaleString()}`);
@@ -90,7 +90,7 @@ function promptViewNote() {
       console.log(`\n=================================`);
       console.log(`ID: ${note.id}`);
       console.log(`Title: ${note.title}`);
-      console.log(`Content: ${note.content}`);
+      console.log(`Content:\n${note.content}`);
       console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
       if (note.updatedAt) {
         console.log(`Updated: ${new Date(note.updatedAt).toLocaleString()}`);
@@ -118,7 +118,7 @@ function promptSearchNotes() {
     } else {
       results.forEach((note) => {
         console.log(`\n[ID: ${note.id}] ${note.title}`);
-        console.log(`Content: ${note.content}`);
+        console.log(`Content:\n${note.content}`);
         console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
         if (note.updatedAt) {
           console.log(`Updated: ${new Date(note.updatedAt).toLocaleString()}`);
@@ -153,7 +153,7 @@ function promptEditNote() {
         return showMainMenu();
       }
 
-      rl.question(`Enter new Content (leave blank to keep existing content): `, (newContent) => {
+      rl.question(`Enter new Content (use '|' for new lines, or leave blank to keep existing): `, (newContent) => {
         const updated = updateNote(note.id, newTitle, newContent);
         console.log(`\nSuccess: Note #${updated.id} updated successfully!`);
         showMainMenu();
@@ -199,7 +199,7 @@ function promptAddNote() {
       return showMainMenu();
     }
 
-    rl.question('Enter Note Content: ', (content) => {
+    rl.question('Enter Note Content (use \'|\' for new lines): ', (content) => {
       if (!isValidContent(content)) {
         console.log('\nValidation Error: Content cannot be empty.');
         return showMainMenu();
