@@ -1,17 +1,17 @@
 const { loadNotes, saveNotes } = require('./storage');
 
-function getNotes() {
-  return loadNotes();
+function getNotes(username) {
+  return loadNotes(username);
 }
 
-function getNoteById(id) {
-  const notes = loadNotes();
+function getNoteById(username, id) {
+  const notes = loadNotes(username);
   const numericId = parseInt(id, 10);
   return notes.find((note) => note.id === numericId) || null;
 }
 
-function searchNotes(query) {
-  const notes = loadNotes();
+function searchNotes(username, query) {
+  const notes = loadNotes(username);
   const lowerQuery = query.toLowerCase().trim();
   if (!lowerQuery) {
     return [];
@@ -22,8 +22,8 @@ function searchNotes(query) {
   );
 }
 
-function getSortedNotes(sortBy) {
-  const notes = loadNotes();
+function getSortedNotes(username, sortBy) {
+  const notes = loadNotes(username);
   const copy = [...notes];
 
   if (sortBy === 'id') {
@@ -49,8 +49,8 @@ function formatContent(content) {
     .join('\n');
 }
 
-function addNote(title, content) {
-  const notes = loadNotes();
+function addNote(username, title, content) {
+  const notes = loadNotes(username);
   const formattedContent = formatContent(content);
 
   const newNote = {
@@ -62,13 +62,13 @@ function addNote(title, content) {
   };
 
   notes.push(newNote);
-  saveNotes(notes);
+  saveNotes(username, notes);
 
   return newNote;
 }
 
-function updateNote(id, newTitle, newContent) {
-  const notes = loadNotes();
+function updateNote(username, id, newTitle, newContent) {
+  const notes = loadNotes(username);
   const numericId = parseInt(id, 10);
   const noteIndex = notes.findIndex((note) => note.id === numericId);
 
@@ -84,13 +84,13 @@ function updateNote(id, newTitle, newContent) {
   }
 
   notes[noteIndex].updatedAt = new Date().toISOString();
-  saveNotes(notes);
+  saveNotes(username, notes);
 
   return notes[noteIndex];
 }
 
-function toggleFavoriteNote(id) {
-  const notes = loadNotes();
+function toggleFavoriteNote(username, id) {
+  const notes = loadNotes(username);
   const numericId = parseInt(id, 10);
   const noteIndex = notes.findIndex((note) => note.id === numericId);
 
@@ -100,13 +100,13 @@ function toggleFavoriteNote(id) {
 
   notes[noteIndex].isFavorite = !notes[noteIndex].isFavorite;
   notes[noteIndex].updatedAt = new Date().toISOString();
-  saveNotes(notes);
+  saveNotes(username, notes);
 
   return notes[noteIndex];
 }
 
-function deleteNote(id) {
-  const notes = loadNotes();
+function deleteNote(username, id) {
+  const notes = loadNotes(username);
   const numericId = parseInt(id, 10);
   const initialLength = notes.length;
   const filteredNotes = notes.filter((note) => note.id !== numericId);
@@ -115,7 +115,7 @@ function deleteNote(id) {
     return false;
   }
 
-  saveNotes(filteredNotes);
+  saveNotes(username, filteredNotes);
   return true;
 }
 
