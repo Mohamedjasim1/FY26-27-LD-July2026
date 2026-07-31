@@ -30,9 +30,19 @@ function isValidChoice(choice, min, max) {
   return Number.isInteger(num) && num >= min && num <= max;
 }
 
+function isValidUsername(username) {
+  if (!username || typeof username !== 'string') {
+    return false;
+  }
+  const trimmed = username.trim();
+  const usernameRegex = /^[a-zA-Z0-9_-]{2,20}$/;
+  return usernameRegex.test(trimmed);
+}
+
 module.exports = {
   isValidId,
   isValidTitle,
   isValidContent,
-  isValidChoice
+  isValidChoice,
+  isValidUsername
 };

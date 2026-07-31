@@ -1,63 +1,85 @@
 const readline = require('readline');
 const { addNote, getNotes, getNoteById, searchNotes, getSortedNotes, updateNote, toggleFavoriteNote, deleteNote } = require('./noteManager');
-const { isValidId, isValidTitle, isValidContent, isValidChoice } = require('./validator');
+const { isValidId, isValidTitle, isValidContent, isValidChoice, isValidUsername } = require('./validator');
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
+let currentUser = '';
+
 function getTitleWithBadge(note) {
   return note.isFavorite ? `${note.title}  [★ FAVORITE]` : note.title;
 }
 
-function showMainMenu() {
+function promptUserLogin() {
   console.log('\n=================================');
   console.log('       NOTES MANAGER CLI         ');
   console.log('=================================');
-  console.log('1. View all notes');
-  console.log('2. View a specific note');
-  console.log('3. Search notes');
-  console.log('4. Sort notes');
-  console.log('5. Favorite / Pin a note');
+  rl.question('Enter your Username: ', (usernameInput) => {
+    if (!isValidUsername(usernameInput)) {
+      console.log('\nValidation Error: Username must be 2 to 20 characters long (letters, numbers, underscores, hyphens only).');
+      return promptUserLogin();
+    }
+
+    currentUser = usernameInput.trim().toLowerCase();
+    console.log(`\nWelcome, ${currentUser.toUpperCase()}! Your notes profile is loaded.`);
+    showMainMenu();
+  });
+}
+
+function showMainMenu() {
+  console.log('\n=================================');
+  console.log(`  NOTES MANAGER CLI [User: ${currentUser.toUpperCase()}]`);
+  console.log('=================================');
+  console.log('1. Add a note');
+  console.log('2. View all notes');
+  console.log('3. View a specific note');
+  console.log('4. Search notes');
+  console.log('5. Sort notes');
   console.log('6. Edit a note');
-  console.log('7. Delete a note');
-  console.log('8. Add a note');
-  console.log('9. Exit');
+  console.log('7. Favorite / Pin a note');
+  console.log('8. Delete a note');
+  console.log('9. Switch User');
+  console.log('10. Exit');
   console.log('=================================');
 
-  rl.question('Select an option (1-9): ', (choice) => {
-    if (!isValidChoice(choice, 1, 9)) {
-      console.log('\nInvalid option. Please enter a number between 1 and 9.');
+  rl.question('Select an option (1-10): ', (choice) => {
+    if (!isValidChoice(choice, 1, 10)) {
+      console.log('\nInvalid option. Please enter a number between 1 and 10.');
       return showMainMenu();
     }
 
     switch (choice.trim()) {
       case '1':
-        viewAllNotes();
+        promptAddNote();
         break;
       case '2':
-        promptViewNote();
+        viewAllNotes();
         break;
       case '3':
-        promptSearchNotes();
+        promptViewNote();
         break;
       case '4':
-        promptSortNotes();
+        promptSearchNotes();
         break;
       case '5':
-        promptFavoriteNote();
+        promptSortNotes();
         break;
       case '6':
         promptEditNote();
         break;
       case '7':
-        promptDeleteNote();
+        promptFavoriteNote();
         break;
       case '8':
-        promptAddNote();
+        promptDeleteNote();
         break;
       case '9':
+        promptUserLogin();
+        break;
+      case '10':
         console.log('\nGoodbye!');
         rl.close();
         break;
@@ -66,11 +88,11 @@ function showMainMenu() {
 }
 
 function viewAllNotes() {
-  const notes = getNotes();
+  const notes = getNotes(currentUser);
 
   console.log('\n--- All Notes ---');
   if (notes.length === 0) {
-    console.log('No notes found. Select option 8 to create one!');
+    console.log('No notes found. Select option 1 to create one!');
   } else {
     notes.forEach((note) => {
       console.log(`\n[ID: ${note.id}] ${getTitleWithBadge(note)}`);
@@ -94,7 +116,7 @@ function promptViewNote() {
       return showMainMenu();
     }
 
-    const note = getNoteById(idInput.trim());
+    const note = getNoteById(currentUser, idInput.trim());
 
     if (!note) {
       console.log(`\nNote with ID ${idInput.trim()} not found.`);
@@ -122,7 +144,7 @@ function promptSearchNotes() {
       return showMainMenu();
     }
 
-    const results = searchNotes(query);
+    const results = searchNotes(currentUser, query);
 
     console.log(`\n--- Search Results for "${query.trim()}" ---`);
     if (results.length === 0) {
@@ -160,11 +182,11 @@ function promptSortNotes() {
       console.log('\nInvalid choice. Defaulting to sorting by ID.');
     }
 
-    const notes = getSortedNotes(sortBy);
+    const notes = getSortedNotes(currentUser, sortBy);
 
     console.log(`\n--- Notes Sorted by ${sortBy.toUpperCase()} ---`);
     if (notes.length === 0) {
-      console.log('No notes found. Select option 8 to create one!');
+      console.log('No notes found. Select option 1 to create one!');
     } else {
       notes.forEach((note) => {
         console.log(`\n[ID: ${note.id}] ${getTitleWithBadge(note)}`);
@@ -189,7 +211,7 @@ function promptFavoriteNote() {
       return showMainMenu();
     }
 
-    const updated = toggleFavoriteNote(idInput.trim());
+    const updated = toggleFavoriteNote(currentUser, idInput.trim());
 
     if (!updated) {
       console.log(`\nNote with ID ${idInput.trim()} not found.`);
@@ -210,7 +232,7 @@ function promptEditNote() {
       return showMainMenu();
     }
 
-    const note = getNoteById(idInput.trim());
+    const note = getNoteById(currentUser, idInput.trim());
 
     if (!note) {
       console.log(`\nNote with ID ${idInput.trim()} not found.`);
@@ -225,7 +247,7 @@ function promptEditNote() {
       }
 
       rl.question(`Enter new Content (use '|' for new lines, '*' for list items, or leave blank to keep existing): `, (newContent) => {
-        const updated = updateNote(note.id, newTitle, newContent);
+        const updated = updateNote(currentUser, note.id, newTitle, newContent);
         console.log(`\nSuccess: Note #${updated.id} updated successfully!`);
         showMainMenu();
       });
@@ -242,7 +264,7 @@ function promptDeleteNote() {
     }
 
     const noteId = idInput.trim();
-    const note = getNoteById(noteId);
+    const note = getNoteById(currentUser, noteId);
 
     if (!note) {
       console.log(`\nNote with ID ${noteId} not found.`);
@@ -252,7 +274,7 @@ function promptDeleteNote() {
     rl.question(`Are you sure you want to delete Note #${note.id} ("${note.title}")? (y/n): `, (confirm) => {
       const choice = confirm.trim().toLowerCase();
       if (choice === 'y' || choice === 'yes') {
-        deleteNote(noteId);
+        deleteNote(currentUser, noteId);
         console.log(`\nSuccess: Note #${noteId} deleted successfully!`);
       } else {
         console.log('\nDeletion cancelled.');
@@ -276,12 +298,11 @@ function promptAddNote() {
         return showMainMenu();
       }
 
-      const createdNote = addNote(title, content);
+      const createdNote = addNote(currentUser, title, content);
       console.log(`\nSuccess: Note #${createdNote.id} ("${createdNote.title}") created successfully!`);
       showMainMenu();
     });
   });
 }
 
-console.log('Welcome to Notes Manager CLI!');
-showMainMenu();
+promptUserLogin();
