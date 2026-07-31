@@ -1,11 +1,15 @@
 const readline = require('readline');
-const { addNote, getNotes, getNoteById, searchNotes, getSortedNotes, updateNote, deleteNote } = require('./noteManager');
+const { addNote, getNotes, getNoteById, searchNotes, getSortedNotes, updateNote, toggleFavoriteNote, deleteNote } = require('./noteManager');
 const { isValidId, isValidTitle, isValidContent, isValidChoice } = require('./validator');
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
+
+function getTitleWithBadge(note) {
+  return note.isFavorite ? `${note.title}  [★ FAVORITE]` : note.title;
+}
 
 function showMainMenu() {
   console.log('\n=================================');
@@ -15,15 +19,16 @@ function showMainMenu() {
   console.log('2. View a specific note');
   console.log('3. Search notes');
   console.log('4. Sort notes');
-  console.log('5. Edit a note');
-  console.log('6. Delete a note');
-  console.log('7. Add a note');
-  console.log('8. Exit');
+  console.log('5. Favorite / Pin a note');
+  console.log('6. Edit a note');
+  console.log('7. Delete a note');
+  console.log('8. Add a note');
+  console.log('9. Exit');
   console.log('=================================');
 
-  rl.question('Select an option (1-8): ', (choice) => {
-    if (!isValidChoice(choice, 1, 8)) {
-      console.log('\nInvalid option. Please enter a number between 1 and 8.');
+  rl.question('Select an option (1-9): ', (choice) => {
+    if (!isValidChoice(choice, 1, 9)) {
+      console.log('\nInvalid option. Please enter a number between 1 and 9.');
       return showMainMenu();
     }
 
@@ -41,15 +46,18 @@ function showMainMenu() {
         promptSortNotes();
         break;
       case '5':
-        promptEditNote();
+        promptFavoriteNote();
         break;
       case '6':
-        promptDeleteNote();
+        promptEditNote();
         break;
       case '7':
-        promptAddNote();
+        promptDeleteNote();
         break;
       case '8':
+        promptAddNote();
+        break;
+      case '9':
         console.log('\nGoodbye!');
         rl.close();
         break;
@@ -62,10 +70,10 @@ function viewAllNotes() {
 
   console.log('\n--- All Notes ---');
   if (notes.length === 0) {
-    console.log('No notes found. Select option 7 to create one!');
+    console.log('No notes found. Select option 8 to create one!');
   } else {
     notes.forEach((note) => {
-      console.log(`\n[ID: ${note.id}] ${note.title}`);
+      console.log(`\n[ID: ${note.id}] ${getTitleWithBadge(note)}`);
       console.log(`Content:\n${note.content}`);
       console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
       if (note.updatedAt) {
@@ -93,7 +101,7 @@ function promptViewNote() {
     } else {
       console.log(`\n=================================`);
       console.log(`ID: ${note.id}`);
-      console.log(`Title: ${note.title}`);
+      console.log(`Title: ${getTitleWithBadge(note)}`);
       console.log(`Content:\n${note.content}`);
       console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
       if (note.updatedAt) {
@@ -121,7 +129,7 @@ function promptSearchNotes() {
       console.log('No matching notes found.');
     } else {
       results.forEach((note) => {
-        console.log(`\n[ID: ${note.id}] ${note.title}`);
+        console.log(`\n[ID: ${note.id}] ${getTitleWithBadge(note)}`);
         console.log(`Content:\n${note.content}`);
         console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
         if (note.updatedAt) {
@@ -156,10 +164,10 @@ function promptSortNotes() {
 
     console.log(`\n--- Notes Sorted by ${sortBy.toUpperCase()} ---`);
     if (notes.length === 0) {
-      console.log('No notes found. Select option 7 to create one!');
+      console.log('No notes found. Select option 8 to create one!');
     } else {
       notes.forEach((note) => {
-        console.log(`\n[ID: ${note.id}] ${note.title}`);
+        console.log(`\n[ID: ${note.id}] ${getTitleWithBadge(note)}`);
         console.log(`Content:\n${note.content}`);
         console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
         if (note.updatedAt) {
@@ -167,6 +175,27 @@ function promptSortNotes() {
         }
         console.log('---------------------------------');
       });
+    }
+
+    showMainMenu();
+  });
+}
+
+function promptFavoriteNote() {
+  console.log('\n--- Favorite / Pin a Note ---');
+  rl.question('Enter Note ID: ', (idInput) => {
+    if (!isValidId(idInput)) {
+      console.log('\nValidation Error: ID must be a valid positive integer.');
+      return showMainMenu();
+    }
+
+    const updated = toggleFavoriteNote(idInput.trim());
+
+    if (!updated) {
+      console.log(`\nNote with ID ${idInput.trim()} not found.`);
+    } else {
+      const status = updated.isFavorite ? 'marked as Favorite ★' : 'unmarked as Favorite';
+      console.log(`\nSuccess: Note #${updated.id} ("${updated.title}") is now ${status}!`);
     }
 
     showMainMenu();

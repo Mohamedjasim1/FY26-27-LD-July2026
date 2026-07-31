@@ -47,6 +47,7 @@ function addNote(title, content) {
     id: notes.length > 0 ? notes[notes.length - 1].id + 1 : 1,
     title: title.trim(),
     content: formattedContent,
+    isFavorite: false,
     createdAt: new Date().toISOString()
   };
 
@@ -81,6 +82,22 @@ function updateNote(id, newTitle, newContent) {
   return notes[noteIndex];
 }
 
+function toggleFavoriteNote(id) {
+  const notes = loadNotes();
+  const numericId = parseInt(id, 10);
+  const noteIndex = notes.findIndex((note) => note.id === numericId);
+
+  if (noteIndex === -1) {
+    return null;
+  }
+
+  notes[noteIndex].isFavorite = !notes[noteIndex].isFavorite;
+  notes[noteIndex].updatedAt = new Date().toISOString();
+  saveNotes(notes);
+
+  return notes[noteIndex];
+}
+
 function deleteNote(id) {
   const notes = loadNotes();
   const numericId = parseInt(id, 10);
@@ -102,5 +119,6 @@ module.exports = {
   getSortedNotes,
   addNote,
   updateNote,
+  toggleFavoriteNote,
   deleteNote
 };
