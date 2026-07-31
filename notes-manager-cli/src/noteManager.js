@@ -22,6 +22,20 @@ function searchNotes(query) {
   );
 }
 
+function getSortedNotes(sortBy) {
+  const notes = loadNotes();
+  const copy = [...notes];
+
+  if (sortBy === 'id') {
+    return copy.sort((a, b) => a.id - b.id);
+  } else if (sortBy === 'name') {
+    return copy.sort((a, b) => a.title.localeCompare(b.title));
+  } else if (sortBy === 'created') {
+    return copy.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  }
+  return copy;
+}
+
 function addNote(title, content) {
   const notes = loadNotes();
   const formattedContent = content
@@ -85,6 +99,7 @@ module.exports = {
   getNotes,
   getNoteById,
   searchNotes,
+  getSortedNotes,
   addNote,
   updateNote,
   deleteNote

@@ -1,5 +1,5 @@
 const readline = require('readline');
-const { addNote, getNotes, getNoteById, searchNotes, updateNote, deleteNote } = require('./noteManager');
+const { addNote, getNotes, getNoteById, searchNotes, getSortedNotes, updateNote, deleteNote } = require('./noteManager');
 const { isValidId, isValidTitle, isValidContent, isValidChoice } = require('./validator');
 
 const rl = readline.createInterface({
@@ -14,15 +14,16 @@ function showMainMenu() {
   console.log('1. View all notes');
   console.log('2. View a specific note');
   console.log('3. Search notes');
-  console.log('4. Edit a note');
-  console.log('5. Delete a note');
-  console.log('6. Add a note');
-  console.log('7. Exit');
+  console.log('4. Sort notes');
+  console.log('5. Edit a note');
+  console.log('6. Delete a note');
+  console.log('7. Add a note');
+  console.log('8. Exit');
   console.log('=================================');
 
-  rl.question('Select an option (1-7): ', (choice) => {
-    if (!isValidChoice(choice, 1, 7)) {
-      console.log('\nInvalid option. Please enter a number between 1 and 7.');
+  rl.question('Select an option (1-8): ', (choice) => {
+    if (!isValidChoice(choice, 1, 8)) {
+      console.log('\nInvalid option. Please enter a number between 1 and 8.');
       return showMainMenu();
     }
 
@@ -37,15 +38,18 @@ function showMainMenu() {
         promptSearchNotes();
         break;
       case '4':
-        promptEditNote();
+        promptSortNotes();
         break;
       case '5':
-        promptDeleteNote();
+        promptEditNote();
         break;
       case '6':
-        promptAddNote();
+        promptDeleteNote();
         break;
       case '7':
+        promptAddNote();
+        break;
+      case '8':
         console.log('\nGoodbye!');
         rl.close();
         break;
@@ -58,7 +62,7 @@ function viewAllNotes() {
 
   console.log('\n--- All Notes ---');
   if (notes.length === 0) {
-    console.log('No notes found. Select option 6 to create one!');
+    console.log('No notes found. Select option 7 to create one!');
   } else {
     notes.forEach((note) => {
       console.log(`\n[ID: ${note.id}] ${note.title}`);
@@ -117,6 +121,44 @@ function promptSearchNotes() {
       console.log('No matching notes found.');
     } else {
       results.forEach((note) => {
+        console.log(`\n[ID: ${note.id}] ${note.title}`);
+        console.log(`Content:\n${note.content}`);
+        console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
+        if (note.updatedAt) {
+          console.log(`Updated: ${new Date(note.updatedAt).toLocaleString()}`);
+        }
+        console.log('---------------------------------');
+      });
+    }
+
+    showMainMenu();
+  });
+}
+
+function promptSortNotes() {
+  console.log('\n--- Sort Notes ---');
+  console.log('Select sort criteria:');
+  console.log('1. By ID');
+  console.log('2. By Name (Title)');
+  console.log('3. By Date Created');
+
+  rl.question('Select an option (1-3): ', (choice) => {
+    let sortBy = 'id';
+    if (choice.trim() === '2') {
+      sortBy = 'name';
+    } else if (choice.trim() === '3') {
+      sortBy = 'created';
+    } else if (choice.trim() !== '1') {
+      console.log('\nInvalid choice. Defaulting to sorting by ID.');
+    }
+
+    const notes = getSortedNotes(sortBy);
+
+    console.log(`\n--- Notes Sorted by ${sortBy.toUpperCase()} ---`);
+    if (notes.length === 0) {
+      console.log('No notes found. Select option 7 to create one!');
+    } else {
+      notes.forEach((note) => {
         console.log(`\n[ID: ${note.id}] ${note.title}`);
         console.log(`Content:\n${note.content}`);
         console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
