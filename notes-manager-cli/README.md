@@ -61,7 +61,12 @@ Select an option (1-10):
 
 ## Features & Simple Examples
 
-### 1. Multi-User Profiles & Isolated Data
+### 1. Clean Terminal UX ("Press Enter to Return")
+After completing any action (viewing, searching, adding, editing, or deleting notes), the CLI cleanly pauses with:
+`Press Enter to return to the main menu...`
+This gives you full control to read outputs without the main menu cluttering your terminal screen.
+
+### 2. Multi-User Profiles & Isolated Data
 Each user's notes are saved in a separate JSON file (`data/notes_<username>.json`). Users can only view, edit, search, and delete their own notes.
 
 **Example Usage:**
@@ -69,7 +74,7 @@ Each user's notes are saved in a separate JSON file (`data/notes_<username>.json
 - All created notes will be stored exclusively in `data/notes_john.json`.
 - Select Option `9` (**Switch User**) to log in as a different user (e.g. `sarah`).
 
-### 2. Add a Note (Unique ID & Bullet List Support)
+### 3. Add a Note (Unique ID & Bullet List Support)
 Creates a new note under your active user profile.
 - **Unique Safe ID Generation**: Uses `Math.max()` to guarantee unique incremental IDs even after notes are sorted or deleted out of order.
 - Use pipe `|` to separate lines for multi-line notes.
@@ -79,7 +84,7 @@ Creates a new note under your active user profile.
 - Enter Note Title: `Grocery List`
 - Enter Note Content: `* Buy milk | * Buy eggs | * Buy bread`
 
-### 3. View All Notes
+### 4. View All Notes
 Lists every note currently stored in your user profile. Pinned favorite notes display a `[★ FAVORITE]` badge!
 
 **Example Terminal Output:**
@@ -95,29 +100,29 @@ Created: 7/31/2026, 11:30:00 PM
 ---------------------------------
 ```
 
-### 4. View a Specific Note
+### 5. View a Specific Note
 Allows you to retrieve and display full details of a single note by entering its unique ID number.
 
-### 5. Search Notes
+### 6. Search Notes
 Performs a keyword search across all note titles and body contents (case-insensitive).
 
-### 6. Sort Notes
+### 7. Sort Notes
 Sorts your saved notes based on your preferred criteria:
 1. By ID (Numerical order)
 2. By Name (Alphabetical title order)
 3. By Date Created (Chronological order)
 
-### 7. Edit a Note (With Interactive Re-Prompting)
+### 8. Edit a Note (With Interactive Re-Prompting)
 Modifies an existing note by ID. You can enter a new title or new content. Leaving a field blank keeps the existing value.
 If you enter an invalid title length (e.g. less than 3 characters), the app warns you and immediately re-prompts for the title without discarding your progress.
 
-### 8. Favorite / Pin a Note
+### 9. Favorite / Pin a Note
 Toggles a note's favorite state by ID. Pinned notes display a `[★ FAVORITE]` star badge across all list views.
 
-### 9. Delete a Note
+### 10. Delete a Note
 Removes a note permanently from your profile after asking for confirmation (`y/n`).
 
-### 10. Input Validation & Error Checks
+### 11. Input Validation & Error Checks
 The application validates inputs to prevent errors:
 - **Username Validation**: 2 to 20 alphanumeric characters (`john`, `sarah_dev`).
 - **Title Validation**: Requires titles to be between 3 and 50 characters long.

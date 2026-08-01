@@ -13,6 +13,12 @@ function getTitleWithBadge(note) {
   return note.isFavorite ? `${note.title}  [★ FAVORITE]` : note.title;
 }
 
+function promptReturnToMenu() {
+  rl.question('\nPress Enter to return to the main menu...', () => {
+    showMainMenu();
+  });
+}
+
 function promptUserLogin() {
   console.log('\n=================================');
   console.log('       NOTES MANAGER CLI         ');
@@ -105,7 +111,7 @@ function viewAllNotes() {
     });
   }
 
-  showMainMenu();
+  promptReturnToMenu();
 }
 
 function promptViewNote() {
@@ -113,7 +119,7 @@ function promptViewNote() {
   rl.question('Enter Note ID: ', (idInput) => {
     if (!isValidId(idInput)) {
       console.log('\nValidation Error: ID must be a valid positive integer.');
-      return showMainMenu();
+      return promptReturnToMenu();
     }
 
     const note = getNoteById(currentUser, idInput.trim());
@@ -132,7 +138,7 @@ function promptViewNote() {
       console.log(`=================================`);
     }
 
-    showMainMenu();
+    promptReturnToMenu();
   });
 }
 
@@ -141,7 +147,7 @@ function promptSearchNotes() {
   rl.question('Enter search keyword: ', (query) => {
     if (!query || !query.trim()) {
       console.log('\nValidation Error: Search keyword cannot be empty.');
-      return showMainMenu();
+      return promptReturnToMenu();
     }
 
     const results = searchNotes(currentUser, query);
@@ -161,7 +167,7 @@ function promptSearchNotes() {
       });
     }
 
-    showMainMenu();
+    promptReturnToMenu();
   });
 }
 
@@ -199,7 +205,7 @@ function promptSortNotes() {
       });
     }
 
-    showMainMenu();
+    promptReturnToMenu();
   });
 }
 
@@ -208,7 +214,7 @@ function promptFavoriteNote() {
   rl.question('Enter Note ID: ', (idInput) => {
     if (!isValidId(idInput)) {
       console.log('\nValidation Error: ID must be a valid positive integer.');
-      return showMainMenu();
+      return promptReturnToMenu();
     }
 
     const updated = toggleFavoriteNote(currentUser, idInput.trim());
@@ -220,7 +226,7 @@ function promptFavoriteNote() {
       console.log(`\nSuccess: Note #${updated.id} ("${updated.title}") is now ${status}!`);
     }
 
-    showMainMenu();
+    promptReturnToMenu();
   });
 }
 
@@ -229,14 +235,14 @@ function promptEditNote() {
   rl.question('Enter Note ID to edit: ', (idInput) => {
     if (!isValidId(idInput)) {
       console.log('\nValidation Error: ID must be a valid positive integer.');
-      return showMainMenu();
+      return promptReturnToMenu();
     }
 
     const note = getNoteById(currentUser, idInput.trim());
 
     if (!note) {
       console.log(`\nNote with ID ${idInput.trim()} not found.`);
-      return showMainMenu();
+      return promptReturnToMenu();
     }
 
     console.log(`Editing Note #${note.id}: "${note.title}"`);
@@ -259,7 +265,7 @@ function askNewContent(note, newTitle) {
   rl.question(`Enter new Content (use '|' for new lines, '*' for list items, or leave blank to keep existing): `, (newContent) => {
     const updated = updateNote(currentUser, note.id, newTitle, newContent);
     console.log(`\nSuccess: Note #${updated.id} updated successfully!`);
-    showMainMenu();
+    promptReturnToMenu();
   });
 }
 
@@ -268,7 +274,7 @@ function promptDeleteNote() {
   rl.question('Enter Note ID to delete: ', (idInput) => {
     if (!isValidId(idInput)) {
       console.log('\nValidation Error: ID must be a valid positive integer.');
-      return showMainMenu();
+      return promptReturnToMenu();
     }
 
     const noteId = idInput.trim();
@@ -276,7 +282,7 @@ function promptDeleteNote() {
 
     if (!note) {
       console.log(`\nNote with ID ${noteId} not found.`);
-      return showMainMenu();
+      return promptReturnToMenu();
     }
 
     rl.question(`Are you sure you want to delete Note #${note.id} ("${note.title}")? (y/n): `, (confirm) => {
@@ -287,7 +293,7 @@ function promptDeleteNote() {
       } else {
         console.log('\nDeletion cancelled.');
       }
-      showMainMenu();
+      promptReturnToMenu();
     });
   });
 }
@@ -297,18 +303,18 @@ function promptAddNote() {
   rl.question('Enter Note Title: ', (title) => {
     if (!isValidTitle(title)) {
       console.log('\nValidation Error: Title is required and must be between 3 and 50 characters.');
-      return showMainMenu();
+      return promptReturnToMenu();
     }
 
     rl.question('Enter Note Content (use \'|\' for new lines, \'*\' for list items): ', (content) => {
       if (!isValidContent(content)) {
         console.log('\nValidation Error: Content cannot be empty.');
-        return showMainMenu();
+        return promptReturnToMenu();
       }
 
       const createdNote = addNote(currentUser, title, content);
       console.log(`\nSuccess: Note #${createdNote.id} ("${createdNote.title}") created successfully!`);
-      showMainMenu();
+      promptReturnToMenu();
     });
   });
 }
