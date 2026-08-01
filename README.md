@@ -103,8 +103,16 @@ Created: 7/31/2026, 11:30:00 PM
 ### 5. View a Specific Note
 Allows you to retrieve and display full details of a single note by entering its unique ID number.
 
-### 6. Search Notes
-Performs a keyword search across all note titles and body contents (case-insensitive).
+### 6. Search Notes (Enhanced Mode Selection)
+Performs keyword substring searches across both note titles and body content (case-insensitive). Supports search filter modes:
+1. **Search all notes by keyword**
+2. **Search inside favorite notes only**
+
+**Example Usage:**
+- Select Option `4` (**Search notes**)
+- Select search mode: `1` (Search all notes)
+- Enter search keyword: `milk`
+- Displays all matching notes containing the word "milk" anywhere in the title or content.
 
 ### 7. Sort Notes
 Sorts your saved notes based on your preferred criteria:

@@ -10,16 +10,21 @@ function getNoteById(username, id) {
   return notes.find((note) => note.id === numericId) || null;
 }
 
-function searchNotes(username, query) {
+function searchNotes(username, query, searchMode = 'all') {
   const notes = loadNotes(username);
   const lowerQuery = query.toLowerCase().trim();
   if (!lowerQuery) {
     return [];
   }
-  return notes.filter((note) =>
-    note.title.toLowerCase().includes(lowerQuery) ||
-    note.content.toLowerCase().includes(lowerQuery)
-  );
+
+  return notes.filter((note) => {
+    if (searchMode === 'favorites' && !note.isFavorite) {
+      return false;
+    }
+    const titleMatches = note.title.toLowerCase().includes(lowerQuery);
+    const contentMatches = note.content.toLowerCase().includes(lowerQuery);
+    return titleMatches || contentMatches;
+  });
 }
 
 function getSortedNotes(username, sortBy) {
