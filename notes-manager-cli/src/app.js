@@ -240,18 +240,26 @@ function promptEditNote() {
     }
 
     console.log(`Editing Note #${note.id}: "${note.title}"`);
-    rl.question(`Enter new Title (leave blank to keep "${note.title}"): `, (newTitle) => {
-      if (newTitle.trim() && !isValidTitle(newTitle)) {
-        console.log('\nValidation Error: New title must be between 3 and 50 characters.');
-        return showMainMenu();
-      }
+    askNewTitle(note);
+  });
+}
 
-      rl.question(`Enter new Content (use '|' for new lines, '*' for list items, or leave blank to keep existing): `, (newContent) => {
-        const updated = updateNote(currentUser, note.id, newTitle, newContent);
-        console.log(`\nSuccess: Note #${updated.id} updated successfully!`);
-        showMainMenu();
-      });
-    });
+function askNewTitle(note) {
+  rl.question(`Enter new Title (leave blank to keep "${note.title}"): `, (newTitle) => {
+    if (newTitle.trim() && !isValidTitle(newTitle)) {
+      console.log('\nValidation Error: New title must be between 3 and 50 characters.');
+      return askNewTitle(note);
+    }
+
+    askNewContent(note, newTitle);
+  });
+}
+
+function askNewContent(note, newTitle) {
+  rl.question(`Enter new Content (use '|' for new lines, '*' for list items, or leave blank to keep existing): `, (newContent) => {
+    const updated = updateNote(currentUser, note.id, newTitle, newContent);
+    console.log(`\nSuccess: Note #${updated.id} updated successfully!`);
+    showMainMenu();
   });
 }
 

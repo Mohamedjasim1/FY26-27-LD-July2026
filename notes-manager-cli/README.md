@@ -106,8 +106,9 @@ Sorts your saved notes based on your preferred criteria:
 2. By Name (Alphabetical title order)
 3. By Date Created (Chronological order)
 
-### 7. Edit a Note
+### 7. Edit a Note (With Interactive Re-Prompting)
 Modifies an existing note by ID. You can enter a new title or new content. Leaving a field blank keeps the existing value.
+If you enter an invalid title length (e.g. less than 3 characters), the app warns you and immediately re-prompts for the title without discarding your progress.
 
 ### 8. Favorite / Pin a Note
 Toggles a note's favorite state by ID. Pinned notes display a `[★ FAVORITE]` star badge across all list views.
