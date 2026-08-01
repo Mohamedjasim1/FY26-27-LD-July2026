@@ -52,9 +52,10 @@ function formatContent(content) {
 function addNote(username, title, content) {
   const notes = loadNotes(username);
   const formattedContent = formatContent(content);
+  const maxId = notes.reduce((max, note) => (note.id > max ? note.id : max), 0);
 
   const newNote = {
-    id: notes.length > 0 ? notes[notes.length - 1].id + 1 : 1,
+    id: maxId + 1,
     title: title.trim(),
     content: formattedContent,
     isFavorite: false,

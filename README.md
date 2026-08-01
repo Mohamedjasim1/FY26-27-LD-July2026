@@ -69,8 +69,9 @@ Each user's notes are saved in a separate JSON file (`data/notes_<username>.json
 - All created notes will be stored exclusively in `data/notes_john.json`.
 - Select Option `9` (**Switch User**) to log in as a different user (e.g. `sarah`).
 
-### 2. Add a Note (Multi-line & Bullet List Support)
+### 2. Add a Note (Unique ID & Bullet List Support)
 Creates a new note under your active user profile.
+- **Unique Safe ID Generation**: Uses `Math.max()` to guarantee unique incremental IDs even after notes are sorted or deleted out of order.
 - Use pipe `|` to separate lines for multi-line notes.
 - Start a line with `*` (asterisk) to format it as a bulleted list item (`•`).
 
