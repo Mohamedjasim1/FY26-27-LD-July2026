@@ -144,30 +144,39 @@ function promptViewNote() {
 
 function promptSearchNotes() {
   console.log('\n--- Search Notes ---');
-  rl.question('Enter search keyword: ', (query) => {
-    if (!query || !query.trim()) {
-      console.log('\nValidation Error: Search keyword cannot be empty.');
-      return promptReturnToMenu();
-    }
+  console.log('Select search filter mode:');
+  console.log('1. Search all notes (Title & Content)');
+  console.log('2. Search favorite notes only');
 
-    const results = searchNotes(currentUser, query);
+  rl.question('Select search mode (1-2): ', (modeChoice) => {
+    const searchMode = modeChoice.trim() === '2' ? 'favorites' : 'all';
 
-    console.log(`\n--- Search Results for "${query.trim()}" ---`);
-    if (results.length === 0) {
-      console.log('No matching notes found.');
-    } else {
-      results.forEach((note) => {
-        console.log(`\n[ID: ${note.id}] ${getTitleWithBadge(note)}`);
-        console.log(`Content:\n${note.content}`);
-        console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
-        if (note.updatedAt) {
-          console.log(`Updated: ${new Date(note.updatedAt).toLocaleString()}`);
-        }
-        console.log('---------------------------------');
-      });
-    }
+    rl.question('Enter search keyword: ', (query) => {
+      if (!query || !query.trim()) {
+        console.log('\nValidation Error: Search keyword cannot be empty.');
+        return promptReturnToMenu();
+      }
 
-    promptReturnToMenu();
+      const results = searchNotes(currentUser, query, searchMode);
+      const modeLabel = searchMode === 'favorites' ? 'Favorite Notes' : 'All Notes';
+
+      console.log(`\n--- Search Results in ${modeLabel} for "${query.trim()}" ---`);
+      if (results.length === 0) {
+        console.log('No matching notes found.');
+      } else {
+        results.forEach((note) => {
+          console.log(`\n[ID: ${note.id}] ${getTitleWithBadge(note)}`);
+          console.log(`Content:\n${note.content}`);
+          console.log(`Created: ${new Date(note.createdAt).toLocaleString()}`);
+          if (note.updatedAt) {
+            console.log(`Updated: ${new Date(note.updatedAt).toLocaleString()}`);
+          }
+          console.log('---------------------------------');
+        });
+      }
+
+      promptReturnToMenu();
+    });
   });
 }
 
